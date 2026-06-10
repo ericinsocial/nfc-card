@@ -346,9 +346,12 @@ h1{
     <div class="pink-line"></div>
 
     <div class="info">
-      <span id="titleEn">-</span><span class="divider">|</span><span id="titleZh">-</span><br>
-      <span id="deptEn">-</span><span class="divider">|</span><span id="deptZh">-</span>
-    </div>
+
+  <div id="titleRow"></div>
+
+  <div id="deptRow"></div>
+
+</div>
 
     <div class="contact-section">
       <div class="contact-box" id="personalContactBox"></div>
@@ -463,12 +466,24 @@ function addContact(boxId, type, href){
 }
 
 function renderCard(person){
-  document.getElementById("nameEn").textContent = person.name_en;
-  document.getElementById("nameZh").textContent = person.name_zh;
-  document.getElementById("titleEn").textContent = person.title_en;
-  document.getElementById("titleZh").textContent = person.title_zh;
-  document.getElementById("deptEn").textContent = person.dept_en;
-  document.getElementById("deptZh").textContent = person.dept_zh;
+const titleRow = document.getElementById("titleRow");
+const deptRow = document.getElementById("deptRow");
+
+titleRow.innerHTML =
+`${person.title_en} <span class="divider">|</span> ${person.title_zh}`;
+
+if(person.dept_en || person.dept_zh){
+
+  deptRow.innerHTML =
+  `${person.dept_en} <span class="divider">|</span> ${person.dept_zh}`;
+
+  deptRow.style.display = "block";
+
+}else{
+
+  deptRow.style.display = "none";
+
+}
 
   const photo = document.getElementById("photo");
   const fallback = document.getElementById("photoFallback");
