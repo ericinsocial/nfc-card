@@ -495,18 +495,21 @@ function renderCard(person){
   photo.src = person.photo ? `photos/${person.photo}` : "";
   photo.alt = person.name_en || "Profile Photo";
 
-  const contactBox = document.getElementById("contactBox");
-  contactBox.innerHTML = "";
+const personalBox = document.getElementById("personalContactBox");
+const companyBox = document.getElementById("companyContactBox");
 
-  addContact("phone", person.phone ? `tel:${person.phone}` : "");
-  addContact("line", person.line);
-  addContact("whatsapp", person.whatsapp);
-  addContact("email", person.email ? `mailto:${person.email}` : "");
+personalBox.innerHTML = "";
+companyBox.innerHTML = "";
 
-  addContact("website", "https://www.bigxreality.com/");
-  addContact("facebook", "https://www.facebook.com/gpttcom");
-  addContact("youtube", "https://www.youtube.com/@BigxReality");
-  addContact("location", "https://maps.app.goo.gl/1pr278sLXAXEEEon7");
+addContact("personalContactBox", "phone", person.phone ? `tel:${person.phone}` : "");
+addContact("personalContactBox", "line", person.line);
+addContact("personalContactBox", "whatsapp", person.whatsapp);
+addContact("personalContactBox", "email", person.email ? `mailto:${person.email}` : "");
+
+addContact("companyContactBox", "website", "https://www.bigxreality.com/");
+addContact("companyContactBox", "facebook", "https://www.facebook.com/gpttcom");
+addContact("companyContactBox", "youtube", "https://www.youtube.com/@BigxReality");
+addContact("companyContactBox", "location", "https://maps.app.goo.gl/1pr278sLXAXEEEon7");
 
   document.getElementById("loading").style.display = "none";
   document.getElementById("cardContent").style.display = "block";
