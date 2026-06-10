@@ -397,7 +397,7 @@ h1{
 
 <script>
 const SHEET_ID = "1UauA16o4veEO4uV9vk1V2_yCoWFvc6GFTYWSPhVo3QA";
-const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv`;
+const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=工作表1`;
 
 function getParam(name){
   const params = new URLSearchParams(window.location.search);
@@ -525,10 +525,46 @@ async function loadData(){
   const id = getParam("id") || "eric";
 
   try{
-    const response = await fetch(SHEET_URL);
-    const csvText = await response.text();
-    const rows = parseCSV(csvText);
-    const people = rowsToObjects(rows);
+    async function loadData(){
+
+  const id = getParam("id") || "eric";
+
+  const response = await fetch(SHEET_URL);
+
+  const text = await response.text();
+
+  const json = JSON.parse(
+      text.substring(47).slice(0,-2)
+  );
+
+  const rows = json.table.rows;
+
+  const people = rows.map(r => ({
+      id:r.c[0]?.v || "",
+      name_en:r.c[1]?.v || "",
+      name_zh:r.c[2]?.v || "",
+      title_en:r.c[3]?.v || "",
+      title_zh:r.c[4]?.v || "",
+      dept_en:r.c[5]?.v || "",
+      dept_zh:r.c[6]?.v || "",
+      phone:r.c[7]?.v || "",
+      line:r.c[8]?.v || "",
+      whatsapp:r.c[9]?.v || "",
+      email:r.c[10]?.v || "",
+      photo:r.c[11]?.v || ""
+  }));
+
+  const person = people.find(
+      p => p.id.toLowerCase() === id.toLowerCase()
+  );
+
+  if(!person){
+      showError(`找不到 id：${id}`);
+      return;
+  }
+
+  renderCard(person);
+}
 
     const person = people.find(p => p.id === id);
 
