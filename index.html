@@ -8,7 +8,6 @@
 <style>
 :root{
   --pink:#D02753;
-  --bg:#06101d;
   --text:#ffffff;
   --muted:#b9c2d0;
   --line:rgba(255,255,255,.16);
@@ -46,6 +45,26 @@ body{
   width:135px;
   max-width:75%;
   height:auto;
+}
+
+.company-header{
+  margin-top:18px;
+  margin-bottom:8px;
+}
+
+.company-header-zh{
+  font-size:23px;
+  font-weight:800;
+  letter-spacing:1.5px;
+  line-height:1.35;
+}
+
+.company-header-en{
+  margin-top:6px;
+  font-size:14px;
+  color:var(--muted);
+  letter-spacing:.5px;
+  line-height:1.4;
 }
 
 .avatar{
@@ -107,15 +126,6 @@ h1{
   padding:0 8px;
 }
 
-.company{
-  border-top:1px solid var(--line);
-  border-bottom:1px solid var(--line);
-  margin:20px auto 24px;
-  padding:18px 0;
-  font-size:18px;
-  line-height:1.7;
-}
-
 .contact-box{
   display:flex;
   justify-content:space-between;
@@ -124,7 +134,7 @@ h1{
   padding:18px 12px;
   border:1px solid var(--line);
   border-radius:20px;
-  margin-bottom:28px;
+  margin:24px 0 28px;
   background:rgba(255,255,255,.04);
 }
 
@@ -216,6 +226,7 @@ h1{
 
 @media(max-width:380px){
   .card{padding:28px 16px;}
+  .company-header-zh{font-size:20px;}
   h1{font-size:36px;}
   .name-zh{font-size:25px;}
   .contact{
@@ -234,6 +245,11 @@ h1{
     <img src="logo.png" alt="Big x Reality Logo">
   </div>
 
+  <div class="company-header">
+    <div class="company-header-zh">全球動力科技股份有限公司</div>
+    <div class="company-header-en">Global Power Technology Co., Ltd.</div>
+  </div>
+
   <div class="avatar">
     <img src="eric.jpg" alt="Eric Chen" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
     <div class="avatar-fallback" style="display:none;">E</div>
@@ -247,11 +263,6 @@ h1{
   <div class="info">
     Marketing Manager <span>|</span> 行銷經理<br>
     Product BD. Dept. <span>|</span> 產品事業發展部
-  </div>
-
-  <div class="company">
-    全球動力科技股份有限公司<br>
-    Global Power Technology Co., Ltd.
   </div>
 
   <div class="contact-box">
