@@ -94,7 +94,7 @@ body{
 .avatar-fallback{
   width:100%;
   height:100%;
-  display:flex;
+  display:none;
   align-items:center;
   justify-content:center;
   font-size:62px;
@@ -129,9 +129,24 @@ h1{
   line-height:1.85;
 }
 
-.info span{
+.info .divider{
   color:var(--pink);
   padding:0 8px;
+}
+
+.contact-section{
+  border:1px solid var(--line);
+  border-radius:20px;
+  margin:24px 0 28px;
+  padding:16px 12px;
+  background:rgba(255,255,255,.04);
+}
+
+.contact-title{
+  font-size:12px;
+  color:var(--muted);
+  letter-spacing:2px;
+  margin:4px 0 10px;
 }
 
 .contact-box{
@@ -140,11 +155,11 @@ h1{
   align-items:center;
   flex-wrap:wrap;
   gap:12px;
-  padding:18px 12px;
-  border:1px solid var(--line);
-  border-radius:20px;
-  margin:24px 0 28px;
-  background:rgba(255,255,255,.04);
+  margin-bottom:14px;
+}
+
+.contact-box:last-child{
+  margin-bottom:0;
 }
 
 .contact{
@@ -240,6 +255,11 @@ h1{
   line-height:1.8;
 }
 
+.loading{
+  color:var(--muted);
+  margin-top:20px;
+}
+
 .modal{
   display:none;
   position:fixed;
@@ -285,11 +305,6 @@ h1{
   font-size:14px;
 }
 
-.loading{
-  color:var(--muted);
-  margin-top:20px;
-}
-
 @media(max-width:380px){
   .card{padding:28px 16px;}
   .company-header-zh{font-size:20px;}
@@ -321,8 +336,8 @@ h1{
   <div id="cardContent" style="display:none;">
 
     <div class="avatar">
-      <img id="photo" src="" alt="Profile Photo" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
-      <div class="avatar-fallback" style="display:none;">B</div>
+      <img id="photo" src="" alt="Profile Photo">
+      <div id="photoFallback" class="avatar-fallback">B</div>
     </div>
 
     <h1 id="nameEn">-</h1>
@@ -331,17 +346,18 @@ h1{
     <div class="pink-line"></div>
 
     <div class="info">
-      <span id="titleEn">-</span> <span>|</span> <span id="titleZh">-</span><br>
-      <span id="deptEn">-</span> <span>|</span> <span id="deptZh">-</span>
+      <span id="titleEn">-</span><span class="divider">|</span><span id="titleZh">-</span><br>
+      <span id="deptEn">-</span><span class="divider">|</span><span id="deptZh">-</span>
     </div>
 
-<div class="contact-section">
-  <div class="contact-title">PERSONAL</div>
-  <div class="contact-box" id="personalContactBox"></div>
+    <div class="contact-section">
+      <div class="contact-title">PERSONAL</div>
+      <div class="contact-box" id="personalContactBox"></div>
 
-  <div class="contact-title">COMPANY</div>
-  <div class="contact-box" id="companyContactBox"></div>
-</div>
+      <div class="contact-title">COMPANY</div>
+      <div class="contact-box" id="companyContactBox"></div>
+    </div>
+
     <div class="section-title">
       <div>
         SOLUTIONS
@@ -399,58 +415,24 @@ h1{
 const SHEET_URL = "https://docs.google.com/spreadsheets/d/1UauA16o4veEO4uV9vk1V2_yCoWFvc6GFTYWSPhVo3QA/gviz/tq";
 
 function getParam(name){
-  const params = new URLSearchParams(window.location.search);
-  return params.get(name);
+  return new URLSearchParams(window.location.search).get(name);
 }
 
-function parseCSV(text){
-  const rows = [];
-  let row = [];
-  let cell = "";
-  let insideQuotes = false;
-
-  for(let i = 0; i < text.length; i++){
-    const char = text[i];
-    const next = text[i + 1];
-
-    if(char === '"' && insideQuotes && next === '"'){
-      cell += '"';
-      i++;
-    }else if(char === '"'){
-      insideQuotes = !insideQuotes;
-    }else if(char === "," && !insideQuotes){
-      row.push(cell);
-      cell = "";
-    }else if((char === "\n" || char === "\r") && !insideQuotes){
-      if(cell || row.length){
-        row.push(cell);
-        rows.push(row);
-        row = [];
-        cell = "";
-      }
-      if(char === "\r" && next === "\n") i++;
-    }else{
-      cell += char;
-    }
-  }
-
-  if(cell || row.length){
-    row.push(cell);
-    rows.push(row);
-  }
-
-  return rows;
+function clean(value){
+  return value === undefined || value === null ? "" : String(value).trim();
 }
 
-function rowsToObjects(rows){
-  const headers = rows[0].map(h => h.trim());
-  return rows.slice(1).map(row => {
-    const obj = {};
-    headers.forEach((header, index) => {
-      obj[header] = (row[index] || "").trim();
-    });
-    return obj;
-  });
+function extractGvizJson(text){
+  const start = text.indexOf("{");
+  const end = text.lastIndexOf("}");
+  if(start === -1 || end === -1){
+    throw new Error("Google Sheet response is not valid gviz data.");
+  }
+  return JSON.parse(text.substring(start, end + 1));
+}
+
+function cell(row, index){
+  return clean(row.c[index]?.v);
 }
 
 function iconSVG(type){
@@ -467,10 +449,10 @@ function iconSVG(type){
   return icons[type] || "";
 }
 
-function addContact(type, href){
-  if(!href || href.trim() === "") return;
+function addContact(boxId, type, href){
+  if(!href || clean(href) === "") return;
 
-  const contactBox = document.getElementById("contactBox");
+  const box = document.getElementById(boxId);
   const a = document.createElement("a");
 
   a.className = "contact";
@@ -479,36 +461,48 @@ function addContact(type, href){
   a.setAttribute("aria-label", type);
   a.innerHTML = iconSVG(type);
 
-  contactBox.appendChild(a);
+  box.appendChild(a);
 }
 
 function renderCard(person){
-  document.getElementById("nameEn").textContent = person.name_en || "";
-  document.getElementById("nameZh").textContent = person.name_zh || "";
-  document.getElementById("titleEn").textContent = person.title_en || "";
-  document.getElementById("titleZh").textContent = person.title_zh || "";
-  document.getElementById("deptEn").textContent = person.dept_en || "";
-  document.getElementById("deptZh").textContent = person.dept_zh || "";
+  document.getElementById("nameEn").textContent = person.name_en;
+  document.getElementById("nameZh").textContent = person.name_zh;
+  document.getElementById("titleEn").textContent = person.title_en;
+  document.getElementById("titleZh").textContent = person.title_zh;
+  document.getElementById("deptEn").textContent = person.dept_en;
+  document.getElementById("deptZh").textContent = person.dept_zh;
 
   const photo = document.getElementById("photo");
-  photo.src = person.photo ? `photos/${person.photo}` : "";
-  photo.alt = person.name_en || "Profile Photo";
+  const fallback = document.getElementById("photoFallback");
 
-const personalBox = document.getElementById("personalContactBox");
-const companyBox = document.getElementById("companyContactBox");
+  fallback.textContent = person.name_en ? person.name_en.charAt(0).toUpperCase() : "B";
+  fallback.style.display = "none";
+  photo.style.display = "block";
 
-personalBox.innerHTML = "";
-companyBox.innerHTML = "";
+  if(person.photo){
+    photo.src = `photos/${person.photo}`;
+  }else{
+    photo.style.display = "none";
+    fallback.style.display = "flex";
+  }
 
-addContact("personalContactBox", "phone", person.phone ? `tel:${person.phone}` : "");
-addContact("personalContactBox", "line", person.line);
-addContact("personalContactBox", "whatsapp", person.whatsapp);
-addContact("personalContactBox", "email", person.email ? `mailto:${person.email}` : "");
+  photo.onerror = function(){
+    photo.style.display = "none";
+    fallback.style.display = "flex";
+  };
 
-addContact("companyContactBox", "website", "https://www.bigxreality.com/");
-addContact("companyContactBox", "facebook", "https://www.facebook.com/gpttcom");
-addContact("companyContactBox", "youtube", "https://www.youtube.com/@BigxReality");
-addContact("companyContactBox", "location", "https://maps.app.goo.gl/1pr278sLXAXEEEon7");
+  document.getElementById("personalContactBox").innerHTML = "";
+  document.getElementById("companyContactBox").innerHTML = "";
+
+  addContact("personalContactBox", "phone", person.phone ? `tel:${person.phone}` : "");
+  addContact("personalContactBox", "line", person.line);
+  addContact("personalContactBox", "whatsapp", person.whatsapp);
+  addContact("personalContactBox", "email", person.email ? `mailto:${person.email}` : "");
+
+  addContact("companyContactBox", "website", "https://www.bigxreality.com/");
+  addContact("companyContactBox", "facebook", "https://www.facebook.com/gpttcom");
+  addContact("companyContactBox", "youtube", "https://www.youtube.com/@BigxReality");
+  addContact("companyContactBox", "location", "https://maps.app.goo.gl/1pr278sLXAXEEEon7");
 
   document.getElementById("loading").style.display = "none";
   document.getElementById("cardContent").style.display = "block";
@@ -518,54 +512,37 @@ addContact("companyContactBox", "location", "https://maps.app.goo.gl/1pr278sLXAX
 
 function showError(message){
   document.getElementById("loading").innerHTML = message;
+  document.getElementById("loading").style.display = "block";
+  document.getElementById("cardContent").style.display = "none";
 }
 
 async function loadData(){
-  const id = getParam("id") || "eric";
+  const id = clean(getParam("id") || "eric").toLowerCase();
 
   try{
-    async function loadData(){
+    const response = await fetch(SHEET_URL);
+    const text = await response.text();
+    const json = extractGvizJson(text);
+    const rows = json.table.rows || [];
 
-  const id = getParam("id") || "eric";
+    const people = rows.map(row => ({
+      id:cell(row, 0),
+      name_en:cell(row, 1),
+      name_zh:cell(row, 2),
+      title_en:cell(row, 3),
+      title_zh:cell(row, 4),
+      dept_en:cell(row, 5),
+      dept_zh:cell(row, 6),
+      phone:cell(row, 7),
+      line:cell(row, 8),
+      whatsapp:cell(row, 9),
+      email:cell(row, 10),
+      photo:cell(row, 11)
+    })).filter(person => person.id !== "");
 
-  const response = await fetch(SHEET_URL);
-
-  const text = await response.text();
-
-  const json = JSON.parse(
-      text.substring(47).slice(0,-2)
-  );
-
-  const rows = json.table.rows;
-
-  const people = rows.map(r => ({
-      id:r.c[0]?.v || "",
-      name_en:r.c[1]?.v || "",
-      name_zh:r.c[2]?.v || "",
-      title_en:r.c[3]?.v || "",
-      title_zh:r.c[4]?.v || "",
-      dept_en:r.c[5]?.v || "",
-      dept_zh:r.c[6]?.v || "",
-      phone:r.c[7]?.v || "",
-      line:r.c[8]?.v || "",
-      whatsapp:r.c[9]?.v || "",
-      email:r.c[10]?.v || "",
-      photo:r.c[11]?.v || ""
-  }));
-
-  const person = people.find(
-      p => p.id.toLowerCase() === id.toLowerCase()
-  );
-
-  if(!person){
-      showError(`找不到 id：${id}`);
-      return;
-  }
-
-  renderCard(person);
-}
-
-    const person = people.find(p => p.id === id);
+    const person = people.find(person =>
+      clean(person.id).toLowerCase() === id
+    );
 
     if(!person){
       showError(`找不到 id：${id}`);
@@ -576,7 +553,7 @@ async function loadData(){
 
   }catch(error){
     console.error(error);
-    showError("資料讀取失敗，請確認 Google Sheet 是否已公開檢視。");
+    showError("資料讀取失敗，請確認 Google Sheet 是否可公開讀取。");
   }
 }
 
