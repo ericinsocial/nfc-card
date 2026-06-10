@@ -3,20 +3,22 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Eric Chen 陳昱華｜Digital Card</title>
-  
+
+<title>Big x Reality｜Digital Card</title>
+
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="manifest" href="manifest.json">
 
 <meta name="theme-color" content="#06101d">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
 <style>
 :root{
   --pink:#D02753;
   --text:#ffffff;
   --muted:#b9c2d0;
-  --line:rgba(255,255,255,.16);
+  --line:rgba(255,255,255,.35);
 }
 
 *{box-sizing:border-box;}
@@ -39,7 +41,7 @@ body{
   width:100%;
   max-width:430px;
   min-height:95vh;
-  border:2px solid #ffffff;
+  border:1px solid var(--line);
   border-radius:28px;
   padding:34px 22px 28px;
   text-align:center;
@@ -134,9 +136,10 @@ h1{
 
 .contact-box{
   display:flex;
-  justify-content:space-between;
+  justify-content:center;
   align-items:center;
-  gap:10px;
+  flex-wrap:wrap;
+  gap:12px;
   padding:18px 12px;
   border:1px solid var(--line);
   border-radius:20px;
@@ -145,8 +148,8 @@ h1{
 }
 
 .contact{
-  width:58px;
-  height:58px;
+  width:52px;
+  height:52px;
   border-radius:50%;
   border:2px solid var(--pink);
   display:flex;
@@ -158,8 +161,8 @@ h1{
 }
 
 .contact svg{
-  width:28px;
-  height:28px;
+  width:25px;
+  height:25px;
   fill:currentColor;
 }
 
@@ -203,6 +206,13 @@ h1{
   border-radius:16px;
   padding:18px 10px;
   background:rgba(255,255,255,.04);
+  color:white;
+  text-decoration:none;
+  cursor:pointer;
+}
+
+.solution-wide{
+  grid-column:1 / 3;
 }
 
 .solution-icon{
@@ -230,14 +240,64 @@ h1{
   line-height:1.8;
 }
 
+.modal{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.72);
+  z-index:99;
+  justify-content:center;
+  align-items:center;
+  padding:24px;
+}
+
+.modal-content{
+  width:100%;
+  max-width:360px;
+  background:#0b1727;
+  border:1px solid var(--line);
+  border-radius:22px;
+  padding:24px;
+  text-align:center;
+}
+
+.modal-title{
+  font-size:22px;
+  font-weight:800;
+  margin-bottom:18px;
+}
+
+.modal-btn{
+  display:block;
+  color:white;
+  text-decoration:none;
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:14px;
+  margin:12px 0;
+  background:rgba(255,255,255,.06);
+}
+
+.close-btn{
+  margin-top:14px;
+  color:var(--muted);
+  cursor:pointer;
+  font-size:14px;
+}
+
+.loading{
+  color:var(--muted);
+  margin-top:20px;
+}
+
 @media(max-width:380px){
   .card{padding:28px 16px;}
   .company-header-zh{font-size:20px;}
   h1{font-size:36px;}
   .name-zh{font-size:25px;}
   .contact{
-    width:52px;
-    height:52px;
+    width:50px;
+    height:50px;
   }
 }
 </style>
@@ -256,93 +316,237 @@ h1{
     <div class="company-header-en">Global Power Technology Co., Ltd.</div>
   </div>
 
-  <div class="avatar">
-    <img src="eric.jpg" alt="Eric Chen" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
-    <div class="avatar-fallback" style="display:none;">E</div>
-  </div>
+  <div id="loading" class="loading">Loading digital card...</div>
 
-  <h1>Eric Chen</h1>
-  <div class="name-zh">陳昱華</div>
+  <div id="cardContent" style="display:none;">
 
-  <div class="pink-line"></div>
-
-  <div class="info">
-    Marketing Manager <span>|</span> 行銷經理<br>
-    Product BD. Dept. <span>|</span> 產品事業發展部
-  </div>
-
-  <div class="contact-box">
-
-    <a class="contact" href="tel:+886920148119" aria-label="Call">
-      <svg viewBox="0 0 24 24">
-        <path d="M6.6 10.8c1.4 2.8 3.8 5.2 6.6 6.6l2.2-2.2c.3-.3.8-.4 1.2-.3 1.3.4 2.6.6 4 .6.7 0 1.4.6 1.4 1.4v3.5c0 .7-.6 1.4-1.4 1.4C10.3 21.8 2.2 13.7 2.2 3.4 2.2 2.6 2.8 2 3.6 2h3.5c.7 0 1.4.6 1.4 1.4 0 1.4.2 2.8.6 4 .1.4 0 .9-.3 1.2l-2.2 2.2z"/>
-      </svg>
-    </a>
-
-    <a class="contact" href="https://line.me/ti/p/x0qtal5f5A" aria-label="LINE">
-      <svg viewBox="0 0 24 24">
-        <path d="M12 3C6.5 3 2 6.7 2 11.3c0 4.1 3.6 7.5 8.4 8.2.3.1.7.2.8.5.1.3.1.6 0 .9l-.1.8c0 .3.3.6.6.4 3.4-1.9 6.3-4.2 8-6.6 1.5-1.8 2.3-3.2 2.3-5.2C22 6.7 17.5 3 12 3z"/>
-      </svg>
-    </a>
-
-    <a class="contact" href="https://www.facebook.com/gpttcom" aria-label="Facebook">
-      <svg viewBox="0 0 24 24">
-        <path d="M15 8h2.2V4.2C16.8 4.1 15.5 4 14.1 4c-3 0-5 1.8-5 5.2V12H5.8v4.2h3.3V24h4.1v-7.8h3.2l.5-4.2h-3.7V9.6c0-1.2.3-1.6 1.8-1.6z"/>
-      </svg>
-    </a>
-
-    <a class="contact" href="https://www.youtube.com/@BigxReality" aria-label="YouTube">
-      <svg viewBox="0 0 24 24">
-        <path d="M23 7.2s-.2-1.6-.9-2.3c-.9-.9-1.9-.9-2.4-1C16.3 3.7 12 3.7 12 3.7s-4.3 0-7.7.2c-.5.1-1.5.1-2.4 1C1.2 5.6 1 7.2 1 7.2S.8 9.1.8 11v1.8c0 1.9.2 3.8.2 3.8s.2 1.6.9 2.3c.9.9 2.1.9 2.6 1 1.9.2 7.5.2 7.5.2s4.3 0 7.7-.3c.5-.1 1.5-.1 2.4-1 .7-.7.9-2.3.9-2.3s.2-1.9.2-3.8V11c0-1.9-.2-3.8-.2-3.8zM9.9 14.8V8.3l6.2 3.3-6.2 3.2z"/>
-      </svg>
-    </a>
-
-    <a class="contact" href="https://maps.app.goo.gl/1pr278sLXAXEEEon7" aria-label="Location">
-      <svg viewBox="0 0 24 24">
-        <path d="M12 2C8.1 2 5 5.1 5 9c0 5.2 7 13 7 13s7-7.8 7-13c0-3.9-3.1-7-7-7zm0 9.5A2.5 2.5 0 1 1 12 6a2.5 2.5 0 0 1 0 5.5z"/>
-      </svg>
-    </a>
-
-  </div>
-
-  <div class="section-title">
-    <div>
-      SOLUTIONS
-      <small>解決方案</small>
-    </div>
-  </div>
-
-  <div class="solutions">
-    <div class="solution">
-      <div class="solution-icon">🥽</div>
-      <div class="solution-title">XR Training</div>
-      <div class="solution-zh">XR 訓練方案</div>
+    <div class="avatar">
+      <img id="photo" src="" alt="Profile Photo" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+      <div class="avatar-fallback" style="display:none;">B</div>
     </div>
 
-    <div class="solution">
-      <div class="solution-icon">🎯</div>
-      <div class="solution-title">VR Tactical Training</div>
-      <div class="solution-zh">戰術訓練模擬</div>
+    <h1 id="nameEn">-</h1>
+    <div class="name-zh" id="nameZh">-</div>
+
+    <div class="pink-line"></div>
+
+    <div class="info">
+      <span id="titleEn">-</span> <span>|</span> <span id="titleZh">-</span><br>
+      <span id="deptEn">-</span> <span>|</span> <span id="deptZh">-</span>
     </div>
 
-    <div class="solution">
-      <div class="solution-icon">🛡️</div>
-      <div class="solution-title">Defense Simulation</div>
-      <div class="solution-zh">國防模擬方案</div>
+    <div class="contact-box" id="contactBox"></div>
+
+    <div class="section-title">
+      <div>
+        SOLUTIONS
+        <small>解決方案</small>
+      </div>
     </div>
 
-    <div class="solution">
-      <div class="solution-icon">🧠</div>
-      <div class="solution-title">AI + XR Integration</div>
-      <div class="solution-zh">AI + XR 整合</div>
-    </div>
-  </div>
+    <div class="solutions">
 
-  <div class="footer">
-    Turn Every Drill into Real.
+      <a class="solution" href="https://www.bigxreality.com/tw/solutions?uuid=bb757b0f-64f6-40e7-a437-776c0b1696a6" target="_blank">
+        <div class="solution-icon">👮</div>
+        <div class="solution-title">Police Simulation</div>
+        <div class="solution-zh">警勤模擬</div>
+      </a>
+
+      <a class="solution" href="https://www.bigxreality.com/tw/solutions?uuid=df0ee8be-ed1a-4117-8a53-161a14ede55d" target="_blank">
+        <div class="solution-icon">🪖</div>
+        <div class="solution-title">Military Simulation</div>
+        <div class="solution-zh">軍事模擬</div>
+      </a>
+
+      <div class="solution solution-wide" onclick="openSutModal()">
+        <div class="solution-icon">🚁</div>
+        <div class="solution-title">SUT / UAV Training</div>
+        <div class="solution-zh">SUT／無人機模擬訓練</div>
+      </div>
+
+    </div>
+
+    <div class="footer">
+      Turn Every Drill into Real.
+    </div>
+
   </div>
 
 </main>
+
+<div class="modal" id="sutModal">
+  <div class="modal-content">
+    <div class="modal-title">SUT / UAV Training</div>
+
+    <a class="modal-btn" href="pdf/BXR-SUT-UAV-Training-ZH.pdf" target="_blank">
+      中文版 PDF
+    </a>
+
+    <a class="modal-btn" href="pdf/BXR-SUT-UAV-Training-EN.pdf" target="_blank">
+      English PDF
+    </a>
+
+    <div class="close-btn" onclick="closeSutModal()">關閉 Close</div>
+  </div>
+</div>
+
+<script>
+const SHEET_ID = "1UauA16o4veEO4uV9vk1V2_yCoWFvc6GFTYWSPhVo3QA";
+const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv`;
+
+function getParam(name){
+  const params = new URLSearchParams(window.location.search);
+  return params.get(name);
+}
+
+function parseCSV(text){
+  const rows = [];
+  let row = [];
+  let cell = "";
+  let insideQuotes = false;
+
+  for(let i = 0; i < text.length; i++){
+    const char = text[i];
+    const next = text[i + 1];
+
+    if(char === '"' && insideQuotes && next === '"'){
+      cell += '"';
+      i++;
+    }else if(char === '"'){
+      insideQuotes = !insideQuotes;
+    }else if(char === "," && !insideQuotes){
+      row.push(cell);
+      cell = "";
+    }else if((char === "\n" || char === "\r") && !insideQuotes){
+      if(cell || row.length){
+        row.push(cell);
+        rows.push(row);
+        row = [];
+        cell = "";
+      }
+      if(char === "\r" && next === "\n") i++;
+    }else{
+      cell += char;
+    }
+  }
+
+  if(cell || row.length){
+    row.push(cell);
+    rows.push(row);
+  }
+
+  return rows;
+}
+
+function rowsToObjects(rows){
+  const headers = rows[0].map(h => h.trim());
+  return rows.slice(1).map(row => {
+    const obj = {};
+    headers.forEach((header, index) => {
+      obj[header] = (row[index] || "").trim();
+    });
+    return obj;
+  });
+}
+
+function iconSVG(type){
+  const icons = {
+    phone:`<svg viewBox="0 0 24 24"><path d="M6.6 10.8c1.4 2.8 3.8 5.2 6.6 6.6l2.2-2.2c.3-.3.8-.4 1.2-.3 1.3.4 2.6.6 4 .6.7 0 1.4.6 1.4 1.4v3.5c0 .7-.6 1.4-1.4 1.4C10.3 21.8 2.2 13.7 2.2 3.4 2.2 2.6 2.8 2 3.6 2h3.5c.7 0 1.4.6 1.4 1.4 0 1.4.2 2.8.6 4 .1.4 0 .9-.3 1.2l-2.2 2.2z"/></svg>`,
+    line:`<svg viewBox="0 0 24 24"><path d="M12 3C6.5 3 2 6.7 2 11.3c0 4.1 3.6 7.5 8.4 8.2.3.1.7.2.8.5.1.3.1.6 0 .9l-.1.8c0 .3.3.6.6.4 3.4-1.9 6.3-4.2 8-6.6 1.5-1.8 2.3-3.2 2.3-5.2C22 6.7 17.5 3 12 3z"/></svg>`,
+    whatsapp:`<svg viewBox="0 0 24 24"><path d="M20.5 3.5A11.8 11.8 0 0 0 12.1 0C5.5 0 .2 5.3.2 11.8c0 2.1.5 4.1 1.6 5.9L0 24l6.5-1.7c1.7.9 3.6 1.4 5.6 1.4 6.5 0 11.8-5.3 11.8-11.8 0-3.2-1.2-6.1-3.4-8.4zM12.1 21.7c-1.8 0-3.5-.5-5-1.4l-.4-.2-3.8 1 1-3.7-.2-.4a9.7 9.7 0 0 1-1.5-5.2c0-5.4 4.4-9.8 9.8-9.8 2.6 0 5.1 1 6.9 2.9 1.8 1.8 2.9 4.3 2.9 6.9.1 5.5-4.3 9.9-9.7 9.9zm5.4-7.3c-.3-.1-1.7-.8-2-.9-.3-.1-.5-.1-.7.1-.2.3-.8.9-.9 1.1-.2.2-.3.2-.6.1-.3-.1-1.2-.4-2.3-1.4-.9-.8-1.4-1.7-1.6-2-.2-.3 0-.4.1-.6.1-.1.3-.3.4-.5.1-.2.2-.3.3-.5.1-.2.1-.4 0-.5-.1-.1-.7-1.6-.9-2.2-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.4s1.1 2.8 1.2 3c.1.2 2.1 3.2 5.1 4.5.7.3 1.3.5 1.7.6.7.2 1.4.2 1.9.1.6-.1 1.7-.7 1.9-1.3.2-.6.2-1.2.2-1.3-.1-.2-.3-.3-.6-.4z"/></svg>`,
+    email:`<svg viewBox="0 0 24 24"><path d="M2 5c0-1.1.9-2 2-2h16c1.1 0 2 .9 2 2v14c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V5zm10 8 8-5V6l-8 5-8-5v2l8 5z"/></svg>`,
+    website:`<svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm6.9 6h-3a15.5 15.5 0 0 0-1.4-3.1A8.1 8.1 0 0 1 18.9 8zM12 4.1c.8 1.1 1.5 2.4 1.9 3.9h-3.8c.4-1.5 1.1-2.8 1.9-3.9zM4.3 14a8.5 8.5 0 0 1 0-4h3.4a17 17 0 0 0 0 4H4.3zm.8 2h3a15.5 15.5 0 0 0 1.4 3.1A8.1 8.1 0 0 1 5.1 16zm3-8h-3a8.1 8.1 0 0 1 4.4-3.1A15.5 15.5 0 0 0 8.1 8zm3.9 11.9c-.8-1.1-1.5-2.4-1.9-3.9h3.8c-.4 1.5-1.1 2.8-1.9 3.9zM14.3 14H9.7a14.2 14.2 0 0 1 0-4h4.6a14.2 14.2 0 0 1 0 4zm.2 5.1A15.5 15.5 0 0 0 15.9 16h3a8.1 8.1 0 0 1-4.4 3.1zM16.3 14a17 17 0 0 0 0-4h3.4a8.5 8.5 0 0 1 0 4h-3.4z"/></svg>`,
+    facebook:`<svg viewBox="0 0 24 24"><path d="M15 8h2.2V4.2C16.8 4.1 15.5 4 14.1 4c-3 0-5 1.8-5 5.2V12H5.8v4.2h3.3V24h4.1v-7.8h3.2l.5-4.2h-3.7V9.6c0-1.2.3-1.6 1.8-1.6z"/></svg>`,
+    youtube:`<svg viewBox="0 0 24 24"><path d="M23 7.2s-.2-1.6-.9-2.3c-.9-.9-1.9-.9-2.4-1C16.3 3.7 12 3.7 12 3.7s-4.3 0-7.7.2c-.5.1-1.5.1-2.4 1C1.2 5.6 1 7.2 1 7.2S.8 9.1.8 11v1.8c0 1.9.2 3.8.2 3.8s.2 1.6.9 2.3c.9.9 2.1.9 2.6 1 1.9.2 7.5.2 7.5.2s4.3 0 7.7-.3c.5-.1 1.5-.1 2.4-1 .7-.7.9-2.3.9-2.3s.2-1.9.2-3.8V11c0-1.9-.2-3.8-.2-3.8zM9.9 14.8V8.3l6.2 3.3-6.2 3.2z"/></svg>`,
+    location:`<svg viewBox="0 0 24 24"><path d="M12 2C8.1 2 5 5.1 5 9c0 5.2 7 13 7 13s7-7.8 7-13c0-3.9-3.1-7-7-7zm0 9.5A2.5 2.5 0 1 1 12 6a2.5 2.5 0 0 1 0 5.5z"/></svg>`
+  };
+  return icons[type] || "";
+}
+
+function addContact(type, href){
+  if(!href || href.trim() === "") return;
+
+  const contactBox = document.getElementById("contactBox");
+  const a = document.createElement("a");
+
+  a.className = "contact";
+  a.href = href;
+  a.target = type === "phone" || type === "email" ? "_self" : "_blank";
+  a.setAttribute("aria-label", type);
+  a.innerHTML = iconSVG(type);
+
+  contactBox.appendChild(a);
+}
+
+function renderCard(person){
+  document.getElementById("nameEn").textContent = person.name_en || "";
+  document.getElementById("nameZh").textContent = person.name_zh || "";
+  document.getElementById("titleEn").textContent = person.title_en || "";
+  document.getElementById("titleZh").textContent = person.title_zh || "";
+  document.getElementById("deptEn").textContent = person.dept_en || "";
+  document.getElementById("deptZh").textContent = person.dept_zh || "";
+
+  const photo = document.getElementById("photo");
+  photo.src = person.photo ? `photos/${person.photo}` : "";
+  photo.alt = person.name_en || "Profile Photo";
+
+  const contactBox = document.getElementById("contactBox");
+  contactBox.innerHTML = "";
+
+  addContact("phone", person.phone ? `tel:${person.phone}` : "");
+  addContact("line", person.line);
+  addContact("whatsapp", person.whatsapp);
+  addContact("email", person.email ? `mailto:${person.email}` : "");
+
+  addContact("website", "https://www.bigxreality.com/");
+  addContact("facebook", "https://www.facebook.com/gpttcom");
+  addContact("youtube", "https://www.youtube.com/@BigxReality");
+  addContact("location", "https://maps.app.goo.gl/1pr278sLXAXEEEon7");
+
+  document.getElementById("loading").style.display = "none";
+  document.getElementById("cardContent").style.display = "block";
+
+  document.title = `${person.name_en || "Big x Reality"}｜Digital Card`;
+}
+
+function showError(message){
+  document.getElementById("loading").innerHTML = message;
+}
+
+async function loadData(){
+  const id = getParam("id") || "eric";
+
+  try{
+    const response = await fetch(SHEET_URL);
+    const csvText = await response.text();
+    const rows = parseCSV(csvText);
+    const people = rowsToObjects(rows);
+
+    const person = people.find(p => p.id === id);
+
+    if(!person){
+      showError(`找不到 id：${id}`);
+      return;
+    }
+
+    renderCard(person);
+
+  }catch(error){
+    console.error(error);
+    showError("資料讀取失敗，請確認 Google Sheet 是否已公開檢視。");
+  }
+}
+
+function openSutModal(){
+  document.getElementById("sutModal").style.display = "flex";
+}
+
+function closeSutModal(){
+  document.getElementById("sutModal").style.display = "none";
+}
+
+loadData();
+</script>
 
 </body>
 </html>
